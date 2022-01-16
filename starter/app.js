@@ -5,12 +5,13 @@ const tasks=require('./routes/tasks')
 const connectDB=require('./db/connect');
 require('dotenv').config();
 // middleware
-app.use(express.json());
+const notFound=require('./middleware/not-found');
 
+// setting up static files
+app.use(express.static('./public'))
+app.use(express.json())
 // routes 
-app.get('/',(req,res)=>{
-    res.send('Task Manager App')
-})
+app.use(notFound);
 
 app.use('/api/v1/tasks',tasks)
 // app.get('/api/v1/tasks')   -get all the tasks
@@ -20,7 +21,7 @@ app.use('/api/v1/tasks',tasks)
 // app.delete('/api/v1/tasks/:id')  -delete task
 
 const port=3000;
-// vid time:2:15:25
+// vid time:2:40:44
 const start =async()=>{
     try{
      await connectDB(process.env.MONGO_URI)

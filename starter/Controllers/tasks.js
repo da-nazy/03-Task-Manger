@@ -1,5 +1,5 @@
 const Task=require('../models/Task');
-
+const asyncWrapper=require('../middleware/async');
 const getAllTasks= async(req,res)=>{
     try{
     const tasks=await Task.find({});
@@ -68,6 +68,24 @@ const deleteTask= async(req,res)=>{
    
 }
 
+const editTask= async(req,res)=>{
+    try{
+     const {id:taskID}=req.params;
+     // running validators while updating
+    const task=await Task.findOneAndUpdate({_id:taskID},req.body,{new:true,runValidators:true,overwrite:true});
+    if(!task){
+
+        return res.status(404).json({msg:`No task with id : ${taskID}`})
+    }
+
+   res.status(200).json({id:taskID,data:req.body});
+
+    }catch(error){
+     res.status(500).json({msg:error});
+    }
+ //   res.send("update tasks");
+} 
+
 
 
 module.exports={
@@ -76,5 +94,6 @@ module.exports={
     getTask,
     getAllTasks,
     deleteTask,
-    updateTask
+    updateTask,
+    editTask
 }
